@@ -1,6 +1,6 @@
 #Opentelemetry-Jaeger-Zipkin
 # springboot-opentelemetry-jaeger
-##Jaeger 
+##Jaeger.. 
 https://github.com/shashanksdixit/observability/tree/main
 https://medium.com/@blackhorseya/deploying-opentelemetry-and-jaeger-with-helm-on-kubernetes-d86cc8ba0332
 
