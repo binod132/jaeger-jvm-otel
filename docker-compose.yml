@@ -1,0 +1,76 @@
+version: '3.8'
+services:
+  ms-one:
+    container_name: ms-one
+    build:
+      context: ./ms-one
+      dockerfile: Dockerfile
+    environment:
+      - OTEL_SERVICE_NAME=ms-one
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_METRICS_EXPORTER=none
+#      - OTEL_TRACES_EXPORTER=jaeger
+#      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+    ports:
+      - "8080:8080"
+    depends_on:
+      - jaeger
+      - zipkin
+  ms-two:
+    container_name: ms-two
+    build:
+      context: ./ms-two
+      dockerfile: Dockerfile
+    environment:
+      - OTEL_SERVICE_NAME=ms-two
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_METRICS_EXPORTER=none
+      # - OTEL_TRACES_EXPORTER=jaeger
+      # - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+    ports:
+      - "8081:8081"
+    depends_on:
+      - jaeger
+      - zipkin
+  # jaeger:
+  #   container_name: jaeger
+  #   image: jaegertracing/all-in-one:latest
+  #   ports:
+  #     - "16686:16686"
+  #     - "14250:14250"
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/jaeger:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14250:14250"
+      - "5778:5778" 
+      - "9411:9411" 
+      - "4317"
+      - "4318"
+    volumes:
+      - jaeger-storage:/var/lib/jaeger
+    depends_on:
+      - otel-collector
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9412:9411"  # Default port for Zipkin UI and API
+    restart: always
+    depends_on:
+      - otel-collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+        - ./otel/otel-collector-config.yml:/etc/otel-collector-config.yml

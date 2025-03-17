@@ -1,4 +1,7 @@
 # springboot-opentelemetry-jaeger
+##Jaeger 
+https://github.com/shashanksdixit/observability/tree/main
+https://medium.com/@blackhorseya/deploying-opentelemetry-and-jaeger-with-helm-on-kubernetes-d86cc8ba0332
 
-# Youtube Video Link: https://youtu.be/-lEsDNMs-QA
+https://www.infracloud.io/blogs/opentelemetry-auto-instrumentation-jaeger/
 # jvm-otel

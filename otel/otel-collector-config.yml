@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+                allowed_origins:
+                  - "http://*"
+                  - "https://*"
+
+exporters:
+  debug:
+    verbosity: "detailed"
+  otlp:
+    endpoint: "jaeger:4317"
+    tls:
+      insecure: true
+  zipkin:
+    endpoint: "http://zipkin:9412/api/v2/spans"
+  # otlphttp:
+  #   endpoint: "http://jaeger:4318"
+  #   tls:
+  #     insecure: true
+  # otlphttp:
+  #   endpoint: "http://loki:3100/otlp/v1/logs"
+  #   tls:
+  #     insecure: true
+
+processors:
+  batch:
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      # processors: [batch]
+      exporters: [debug, otlp, zipkin] #, otlphttp]      
